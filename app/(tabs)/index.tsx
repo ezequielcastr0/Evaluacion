@@ -1,70 +1,167 @@
-import { Image, StyleSheet, Platform } from 'react-native';
+import React, { useState } from 'react';
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+
+// **Esta línea importa el hook useState de React, que permite manejar el estado de la
+import { StyleSheet, View, Button, Text, TextInput } from 'react-native';
+// **Se importan componentes básicos de React Native como View, Button, Text, TextInput,etc.**
+
+
+import Slider from '@react-native-community/slider';
+
+
 
 export default function HomeScreen() {
-  return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({ ios: 'cmd + d', android: 'cmd + m' })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
-  );
+const [greeting, setGreeting] = useState('¡Igresa una frase!');
+// **Se define el estado greeting para almacenar el saludo, y se inicializa con "¡Hola,Alumno!"**
+const [nombre, setNombre] = useState('');
+const [primero, setQuoteIndex] = useState(0);
+const [colorF, setQuoteIndexx] = useState(0);
+const [fontSize, setFontSize] = useState(24);
+// **Se define el estado nombre, que almacenará el nombre que el usuario ingrese.**
+// *** INICIO DE LA MODIFICACIÓN ***
+const [bgColor, setBgColor] = useState('#fff'); // Estado para el color de fondo
+// **Se define el estado bgColor, que se utilizará para cambiar dinámicamente el color defondo.**
+
+
+const FrasesYcolor = [
+  { color: 'red', text: '"La pasión es el combustible que enciende tus sueños. ¡No dejes que nadie apague tu fuego!"' },
+  { color: 'green', text: '“El primer verde de la naturaleza es el oro”. Robert Frost.' },
+  { color: 'blue', text: '“El sol está alto, el cielo es azul; Es hermoso, y tú también”. – John Lennon.' },
+  { color: 'orange', text: '"La energía positiva transforma los obstáculos en oportunidades. ¡Brilla con tu luz naranja!"' },
+];
+const colores = [
+  { color: 'red' },
+  { color: 'green' },
+  { color: 'blue' },
+  { color: 'orange' },
+  {color:  'white' },
+  {color:  'yellow' },
+  {color:  'purple' },
+];
+
+
+const CambiarcoloryFrase= () => {
+  const siguiente = (primero + 1) % FrasesYcolor.length;
+  setBgColor(FrasesYcolor[siguiente].color);
+  setGreeting(FrasesYcolor[siguiente].text);
+  setQuoteIndex(siguiente);
+};
+const Cambiarcolor= () => {
+  const siguienteColor = (colorF + 1) % colores.length;
+  setBgColor(colores[siguienteColor].color);
+  setQuoteIndexx(siguienteColor);
+};
+
+
+return (
+<View style={[styles.container, { backgroundColor: bgColor }]}>
+
+
+<Text style={[styles.greetingText, { fontSize }]}>
+{greeting}
+</Text>
+
+
+<TextInput
+style={styles.input}
+placeholder="Escribe aca la frase"
+value={nombre}
+onChangeText={(text) => setNombre(text)}
+/>
+<Button
+ title="Te recomiendo una frase"
+ onPress={() => {
+  setGreeting(`¡tu frase! ${nombre}!`);
+  CambiarcoloryFrase();
+}
 }
 
+
+
+/>
+<Button
+ title="Ingresa tu frase"
+ onPress={() => {
+  setGreeting(`¡tu frase! ${nombre}!`);
+  Cambiarcolor();
+}
+}
+
+
+
+/>
+
+<Text>Tamaño del Texto</Text>
+<Slider
+style={styles.slider}
+minimumValue={10}
+maximumValue={40}
+step={1}
+value={fontSize}
+onValueChange={(value) => setFontSize(value)}
+/>
+
+<View style={styles.buttonContainer}>
+<Button title="rojo" onPress={() => {
+  setBgColor('red');
+  setGreeting('"La pasión es el combustible que enciende tus sueños. ¡No dejes que nadie apague tu fuego!"¡Has elegido rojo!');
+  } } />
+{/* **Este botón cambia el color de fondo a rojo cuando se presiona.** */}
+<Button title="Verde" onPress={() =>{
+   setBgColor('green');
+   setGreeting(' “El primer verde de la naturaleza es el oro”. Robert Frost.¡Has elegido verde!');
+}} />
+{/* **Este botón cambia el color de fondo a verde cuando se presiona.** */}
+<Button title="Azul" onPress={() => {
+  setBgColor('blue');
+  setGreeting(' “El sol está alto, el cielo es azul; Es hermoso, y tú también”. – John Lennon ¡Has elegido Azul!');
+
+}}/>
+{/* **Este botón cambia el color de fondo a azul cuando se presiona.** */}
+<Button title="Naranja" onPress={() => { setBgColor('orange')
+setGreeting('"La energía positiva transforma los obstáculos en oportunidades. ¡Brilla con tu luz naranja!" ¡Has elegido Naranja!');
+}} />
+
+</View>
+
+
+</View>
+
+
+);
+}
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
+container: {
+ 
+
+
+flex: 1,
+justifyContent: 'center',
+alignItems: 'center',
+},
+greetingText: {
+fontSize: 24,
+marginBottom: 10,
+},
+input: {
+height: 40,
+borderColor: 'gray',
+borderWidth: 1,
+width: 200,
+paddingHorizontal: 10,
+marginBottom: 20,
+},
+
+buttonContainer: {
+flexDirection: 'row',
+justifyContent: 'space-around',
+width: '60%',
+},
+slider: {
+    width: 300,
+    height: 40,
+    marginVertical: 20,
+    },
+
+
 });
